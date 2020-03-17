@@ -1,0 +1,12 @@
+name: Run php-cs-fixer
+on: [push]
+
+jobs:
+    php-cs-fixer:
+        name: php-cs-fixer
+        runs-on: ubuntu-latest
+        steps:
+        - name: Run php-cs-fixer
+          run: git diff --name-only origin/master | xargs -d'\n' -r | vendor/bin/php-cs-fixer fix
+        - name: Assert that no files are changed
+          run: git diff --exit-code

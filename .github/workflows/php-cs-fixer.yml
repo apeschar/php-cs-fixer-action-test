@@ -13,10 +13,13 @@ jobs:
       run: |
         set -euo pipefail
         if [[ $(git rev-parse --abbrev-ref HEAD) = master ]]; then
-            upstream=HEAD^
+          upstream=HEAD^
         else
-            upstream=origin/master
-            git fetch --no-tags --prune --depth=1 origin master
+          upstream=origin/master
+          git fetch --no-tags --prune --depth=1 origin master
         fi
         git diff --name-only $upstream | xargs -d'\n' -r vendor/bin/php-cs-fixer fix
-        git diff --exit-code
+        if git diff --exit-code; then
+          git commit -am "Run php-cs-fixer"
+          git push origin HEAD
+        fi

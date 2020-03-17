@@ -11,14 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 2
     - name: Run php-cs-fixer
       run: |
         set -euo pipefail
         git fetch --no-tags --prune --depth=1 origin master
-        git diff --name-only origin/master | xargs -d'\n' -r vendor/bin/php-cs-fixer fix
-        if git diff --exit-code; then
+        vendor/bin/php-cs-fixer fix
+        if git diff --exit-code >/dev/null; then
           git commit -am "Run php-cs-fixer"
           git push origin HEAD
         fi

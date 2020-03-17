@@ -16,7 +16,7 @@ jobs:
         set -euo pipefail
         git fetch --no-tags --prune --depth=1 origin master
         vendor/bin/php-cs-fixer fix
-        if git diff --exit-code >/dev/null; then
+        if git diff --exit-code; then
           git commit -am "Run php-cs-fixer"
           git push origin HEAD
         fi

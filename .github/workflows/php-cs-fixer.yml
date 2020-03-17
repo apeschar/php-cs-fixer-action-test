@@ -14,9 +14,12 @@ jobs:
     - name: Run php-cs-fixer
       run: |
         set -euo pipefail
+        export GIT_COMMITTER_NAME=php-cs-fixer
+        export GIT_COMMITTER_EMAIL=php-cs-fixer@webwinkelkeur.nl
+        export GIT_AUTHOR_NAME="$GIT_COMMITTER_NAME" GIT_AUTHOR_EMAIL="$GIT_COMMITTER_EMAIL"
         git fetch --no-tags --prune --depth=1 origin master
         vendor/bin/php-cs-fixer fix
-        if git diff --exit-code; then
+        if ! git diff --exit-code; then
           git commit -am "Run php-cs-fixer"
           git push origin HEAD
         fi

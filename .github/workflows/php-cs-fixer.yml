@@ -2,19 +2,21 @@ name: Run php-cs-fixer
 on: [push]
 
 jobs:
-    php-cs-fixer:
-        name: php-cs-fixer
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v2
-        - name: Run php-cs-fixer
-          run: |
-            set -euo pipefail
-            if [[ $(git rev-parse --abbrev-ref HEAD) = master ]]; then
-                upstream=HEAD^
-            else
-                upstream=origin/master
-                git fetch --no-tags --prune --depth=1 origin master
-            fi
-            git diff --name-only $upstream | xargs -d'\n' -r vendor/bin/php-cs-fixer fix
-            git diff --exit-code
+  php-cs-fixer:
+    name: php-cs-fixer
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
+    - name: Run php-cs-fixer
+      run: |
+        set -euo pipefail
+        if [[ $(git rev-parse --abbrev-ref HEAD) = master ]]; then
+            upstream=HEAD^
+        else
+            upstream=origin/master
+            git fetch --no-tags --prune --depth=1 origin master
+        fi
+        git diff --name-only $upstream | xargs -d'\n' -r vendor/bin/php-cs-fixer fix
+        git diff --exit-code

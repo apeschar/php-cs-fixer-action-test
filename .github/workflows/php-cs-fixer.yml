@@ -10,5 +10,11 @@ jobs:
         - name: Run php-cs-fixer
           run: |
             set -euo pipefail
-            git diff --name-only origin/master | xargs -d'\n' -r vendor/bin/php-cs-fixer fix
+            if [[ $(git rev-parse --abbrev-ref HEAD) = master ]]; then
+                upstream=HEAD^
+            else
+                upstream=origin/master
+                git fetch --no-tags --prune --depth=1 origin master
+            fi
+            git diff --name-only $upstream | xargs -d'\n' -r vendor/bin/php-cs-fixer fix
             git diff --exit-code
